@@ -1,0 +1,136 @@
+Flexible Data Formats
+
+Exercise 1:
+Goal: Write a query to format the view_item event into a table with the appropriate columns
+
+Starter Code:
+SELECT 
+*
+FROM 
+	Dsv1069.events
+WHERE
+	Event_name = ‘view_item’
+
+Solution Exercise 1:
+SELECT
+event_id,
+event_name,
+user_id,
+platform,
+ (CASE WHEN events.parameter_name = 'item_id'
+ THEN CAST(events.parameter_value AS INT)
+ ELSE NULL
+ END) AS item_id
+FROM dsv1069.events AS events
+WHERE event_name = 'view_item'
+ORDER BY event_id
+
+
+Exercise 2:
+Goal: Write a query to format the view_item event into a table with the appropriate columns
+(This replicates what we had in the slides, but it is missing a column)
+
+Starter Code:
+SELECT
+Event_id,
+Event_time,
+User_id,
+Platform,
+(CASE WHEN parameter_name = ‘item_id’
+	THEN CAST(parameter_value AS INT)
+	ELSE NULL
+	END) AS item_id
+FROM dsv1069.events
+WHERE
+Event_name = ‘view_item’
+ORDER BY event_id
+
+Solution Exercise 2:
+SELECT
+Event_id,
+Event_time,
+User_id,
+Event_name,
+Platform,
+(CASE WHEN parameter_name = ‘item_id’
+	THEN CAST(parameter_value AS INT)
+	ELSE NULL
+	END) AS item_id
+FROM dsv1069.events
+WHERE
+Event_name = ‘view_item’
+ORDER BY event_id
+
+
+Exercise 3:
+Goal: Use the result from the previous exercise, but make sure
+
+Starter Code: (Ex.2)
+SELECT 
+Event_id,
+Event_time,
+User_id,
+Platform,
+(CASE WHEN parameter_name = ‘item_id’
+	THEN CAST(parameter_value AS INT)
+	ELSE NULL
+	END) AS item_id
+(CASE WHEN parameter_name = ‘referrer’
+	THEN parameter_value
+	ELSE NULL
+	END) AS referrer
+FROM
+	Dsv1069.events
+WHERE event_name = ‘view_item’
+ORDER BY event_id
+
+
+Exercise 3:
+Goal: Use the result from the previous exercise, but make sure
+
+Starter Code:
+SELECT 
+Event_id,
+Event_time,
+User_id,
+Platform,
+(CASE WHEN parameter_name = ‘item_id’
+	THEN CAST(parameter_value AS INT)
+	ELSE NULL
+	END) AS item_id,
+(CASE WHEN parameter_name = ‘referrer’
+	THEN parameter_value
+	ELSE NULL
+	END) AS referrer
+FROM
+	Dsv1069.events
+WHERE event_name = ‘view_item’
+GROUP BY
+Event_id,
+Event_time,
+User_id,
+platform
+
+
+Solution Exercise 3:
+SELECT 
+Event_id,
+Event_time,
+User_id,
+Platform,
+MAX(CASE WHEN parameter_name = ‘item_id’
+	THEN CAST(parameter_value AS INT)
+	ELSE NULL
+	END) AS item_id,
+MAX(CASE WHEN parameter_name = ‘referrer’
+	THEN parameter_value
+	ELSE NULL
+	END) AS referrer
+FROM
+	Dsv1069.events
+WHERE event_name = ‘view_item’
+GROUP BY
+Event_id,
+Event_time,
+User_id,
+platform
